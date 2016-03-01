@@ -13,8 +13,8 @@ from datetime import datetime
 import time
 import requests
 import sys, getopt
-class Spider():
 
+class Spider():
     #获取页面,返回这个页面的字符串
     #url 是获取页面的url地址
     #以字典的形式将css等信息返回
@@ -53,10 +53,14 @@ class Spider():
         #提取字符串中的数字取前12个作为路径名
         filename = filter(str.isalnum, date)[:12]
         newdir = directory + '/' + filename
-        os.mkdir(newdir)
-        #创建子目录css,ja,images
-        list(os.mkdir(newdir + '/' + m) for m in ['css', 'js', 'images'])
-        return newdir
+        try:
+            os.mkdir(newdir)
+            #创建子目录css,ja,images
+            list(os.mkdir(newdir + '/' + m) for m in ['css', 'js', 'images'])
+            return newdir
+        except:
+            print u"文件已存在，请过一分钟后再试！"
+            sys.exit()
 
     #将css等文件存储到本地
     #sohufile是downloads()方法返回的字典
@@ -95,11 +99,18 @@ if __name__ == '__main__':
             u = value
         if opt == '-o':
             d = value
+    count = 0
+    s = Spider()
     while True:
-        s = Spider()
-        page = s.getPage(u) # r'http://m.sohu.com'
-        sohufile = s.downloads(page)
-        newdir = s.makedir(d)
-        s.store(sohufile, newdir, page)
-        #暂停60秒
-        time.sleep(t)
+        try:
+            page = s.getPage(u) # r'http://m.sohu.com'
+            sohufile = s.downloads(page)
+            newdir = s.makedir(d)
+            s.store(sohufile, newdir, page)
+            count += 1
+            print u'执行了 %d 次' % count
+            #暂停60秒
+            time.sleep(t)
+        except KeyboardInterrupt:
+            print u'程序已停止!'
+            break
