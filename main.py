@@ -1,4 +1,5 @@
-# -*-coding:utf-8-*-
+#!/usr/bin/python
+#-*-coding:utf-8-*-
 '''
 思路：
 1.先获取到首页内容，
@@ -17,7 +18,6 @@ import sys, getopt
 class Spider():
     #获取页面,返回这个页面的字符串
     #url 是获取页面的url地址
-    #以字典的形式将css等信息返回
     def getPage(self, url):
         try:
             response = urllib2.urlopen(url)
@@ -28,6 +28,7 @@ class Spider():
 
     #读取页面中的css,js和img 
     #page 是传入页面的字符串形式
+    #以字典的形式将css等信息返回
     def downloads(self, page):
         # 使用正则表达式来匹配页面中css的文件存储的位置
         pattern_css = re.compile('<link.*?href="(.*?css)"')
